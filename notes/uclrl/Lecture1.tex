@@ -1,0 +1,107 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\newtheorem{defn}{Definition}
+
+%opening
+\title{UCLRL Lecture 1 Notes}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{The Reinforcement Learning Problem}
+
+A reward $R_t$ at time $t$ is a scalar indicating how well an agent is doing. The goal of the agent is to maximize cummulative reward $\sum_t R_t$.
+
+\subsection{Reward Hypothesis}
+
+All goals can be described by the maximization of expected cummulative reward.
+
+\subsection{Sequential Decision Making}
+
+At each time step $t$, 
+\\
+{\bf Action:} Execute $A_t$
+\\
+{\bf Observation:} Receive $O_t$
+\\
+{\bf Reward} Receive $R_t$
+\\
+{\bf Goal:} Select actions to maximize total future reward.
+
+The {\bf history} is the sequence of observations, actions, rewards 
+$$
+H_t = A_1, O_1, R_1, \ldots, A_t, O_t, R_t
+$$
+The {\bf state} is a function of history that determines what happens next.
+$$
+S_t = f(H_t)
+$$
+The {\bf environment state} $S_t^e$ is the private representation of the environment and produces the next observation after an action. It is not  usually visible to the agent or if visible is full of irrelevant information. The {\bf agent state} $S_t^a$ is the agent's internal representation and is used to pick the next action and is the information used by the learning algorithms. Thus, 
+$$
+S_t^a = f^a(H_t)
+$$
+In {\bf full observability}, agent directly sees the environment state,
+$$
+O_t = S_t^a = S_t^e
+$$ and in {\bf partial observability}, $S_t^a \ne S_t^e$.
+
+An {\bf information state} contains all useful informmation from history. 
+
+\begin{defn}
+ A state $S_t$ is Markov if and only if 
+ $$
+ \mathbb{P}\left[S_{t+1} | S_t\right] = \mathbb{P}\left[S_{t+1} | S_1, \ldots, S_t\right]
+ $$
+\end{defn}
+
+\subsubsection{Constructing State Representation}
+
+\begin{itemize}
+ \item Complete history: $S_t^a = H_t$
+ \item Beliefs: $S_t = (\mathbb{P}[S_t^e = s^1], \ldots, \mathbb{P}[S_t^e = s^n])$
+ \item Recurrent Neural Network: $S_t^a = \sigma(S_{t-1}^a W_s + O_t W_o)$
+\end{itemize}
+
+
+\section{RL Agent}
+
+Agent contains one or more of the components
+\begin{itemize}
+ \item Policy : Determine what action to take next, or the agent's behavior. It is a map from state to action. {\bf Determistic Policy} $a = \pi(s)$ and {\bf Stochastic Policy} $\pi(a|s) = \mathbb{P}[A = a | S = s]$
+ \item Value function : Prediction of future reward to evaluate the goodness/badness of state.
+ $$
+ V_\pi(s) = \mathbb{E}_\pi \left[ R_t + \gamma R_{t+1} + \gamma^2 R_{t+1} + \ldots | S_t = s \right]
+ $$
+ \item Model : Agent's model of the environment
+\end{itemize}
+
+\subsection{Model}
+
+Predicts what the environment will do next. $\mathcal{P}$ predicts the next state (dynamics) 
+$$
+\mathcal{P}_{ss^\prime}^a = \mathbb{P} \left[ S^\prime = s^\prime | S = s, A = a \right]
+$$
+and $\mathcal{R}$ predicts the next immediate reward
+$$
+\mathcal{R}_s^a = \mathbb{E} \left[ R | S = s, A = a \right]
+$$
+
+\subsection{Categorizing RL agents}
+
+\begin{itemize}
+ \item Value based - value function and no policy (implicit in the value function)
+ \item Policy based - Only policy and no value function
+ \item Actor Critic - Has a policy but also stores the value function
+ \item Model Free - Do not make a model of the environment. Just create the policy or value function.
+\end{itemize}
+
+
+
+\end{document}
