@@ -6,6 +6,7 @@
 \usepackage{bm}
 
 \newtheorem{defn}{Definition}
+\newtheorem{theorem}{Theorem}
 
 %opening
 \title{UCLRL Lecture 2 Notes}
@@ -93,5 +94,113 @@ Bellman equation can be solved direcly as
    &= (I - \gamma \mathcal{P})^{-1} \mathcal{R}
 \end{align*}
 
+
+\subsection{Markov Decision Process}
+
+\begin{defn}[Markov Decision Process]
+A Markov Decision Process is a Markov Reward Process with a finite set of actions $\mathcal{A}$. Thus, the Markov Decision process is a tuple $\left< \mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma \right>$ such that
+\begin{enumerate}
+ \item $\mathcal{A}$ is a finite set of actions
+ \item $\mathcal{P}_{s s^\prime}^a = \mathbb{P} \left[ S_{t+1} = s^\prime | S_t = s, A_t = a \right]$
+ \item $\mathcal{R}$ is a reward function, $\mathcal{R}_s^a = \mathbb{E} \left[ R_{t+1} | S_t = s, A_t = a \right]$
+\end{enumerate}
+\end{defn}
+
+\begin{defn}[Policy]
+ A policy $\pi$ is a distribution over actions given states,
+ $$
+ \pi(a|s) = \mathbb{P} \left[ A_t = a | S_t = s \right]
+ $$
+\end{defn}
+
+\begin{defn}[State Value Function]
+ The state value function $v_\pi(s)$ of an MMDFP is the expected return starting from state $s$ and then following policy $\pi$
+ $$
+ v_\pi(s) = \mathbb{E}_\pi \left[ G_t | S_t = s \right]
+ $$
+\end{defn}
+
+\begin{defn}[Action Value Function]
+ The action value function $q_\pi(s,a)$ is the expected return staring from state $s$, taking action $a$, and then following policy $\pi$
+ $$
+ q_\pi(s,a) = \mathbb{E}_\pi \left[ G_t | S_t = s, A_t = a \right]
+ $$
+\end{defn}
+
+\begin{defn}[Bellman Expectation Equation]
+ Bellman expectation eqiation be expressed for the Markov reward process as
+ $$
+ v_\pi = \mathcal{R}^\pi + \gamma \mathcal{P}^\pi v_\pi
+ $$
+ which gives us the solution after solving for $v_\pi$, 
+ $$
+ v_\pi = \left(I - \gamma \mathcal{P}^\pi\right)^{-1} \mathcal{R}^\pi
+ $$
+\end{defn}
+
+\begin{defn}
+ The optimal state value function $v_o(s)$ is the maximum value function over all policies
+ $$
+ v_\star(s) = \max_\pi v_\pi(s)
+ $$
+\end{defn}
+
+\begin{defn}
+ The optimal action-value function $q_o(s,a)$ is the maximum action-value function over all policies
+ $$
+ q_\star(s,a) = \max_\pi q_\pi(s,a)
+ $$
+\end{defn}
+
+\begin{defn}[Partial Ordering of Policies]
+ $$
+ \pi \geq \pi^\prime
+ v_\pi(s) \geq v_\pi^\prime(s), \forall s
+ $$
+\end{defn}
+
+\begin{theorem}
+ For any Markov decision process
+ \begin{enumerate}
+  \item There exists an optimal policy $\pi_\star$ that is better than or equal to all other policies $\pi_\star \geq \pi, \forall \pi$
+  \item All optimal policies achieve the optimal value function 
+  $$
+  v_{\pi_\star}(s) = v_\star(s)
+  $$
+  \item All optimal policies achive the optimal action-value function
+  $$
+  q_{\pi_\star}(s,a) = q_\star(s,a)
+  $$
+ \end{enumerate}
+
+\end{theorem}
+
+An optimal policy can be found by maximizing over $q_\star(s,a)$, 
+$$
+\pi_\star(a|s) = 
+\begin{cases}
+ 1 & \mbox{if} a = {\arg\max}_{a \in \mathcal{A}} q_\star(s,a)\\
+ 0 & \mbox{otherwise} \\
+\end{cases}
+$$
+
+\section{Bellman Equations}
+
+For $v_\star$ we look at the action that gives us the most value,
+$$
+v_\star(s) = \max_a q_\star (s, a)
+$$
+and for $q_\star$, we have the immediate reward and the average of all the states and their values,
+$$
+q_\star(s,a) = \mathcal{R}_s^a + \gamma \sum_{s^\prime in \mathcal{S}} \mathcal{P}^a_{s s^\prime} v_\star(s^\prime)
+$$
+and combining them together,
+$$
+v_\star(s) = \max_a \left[ \mathcal{R}_s^a + \gamma \sum_{s^\prime \in \mathcal{S}} P^a_{s s^\prime} v_\star(s^\prime) \right]
+$$
+and similarly for $q_\star$, 
+$$
+q_\star(s,a) = \mathcal{R}_s^a + \gamma \sum_{s^\prime in \mathcal{S}} \mathcal{P}^a_{s s^\prime} \max_{a^\prime} q_\star(s^\prime, a^\prime)
+$$
 
 \end{document}
